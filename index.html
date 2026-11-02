@@ -7,7 +7,7 @@
     <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIk1TTiBFbnRyZWdhcyBFeHByZXNzIiwKICAic2hvcnRfbmFtZSI6ICJNU04gRW50cmVnYXMiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxMmExMWYiLAogICJ0aGVtZV9jb2xvciI6ICIjZmZjMDAwIgp9">
     <style>
         :root {
-            --bg-main: #12a11f;
+            --bg-main: #121212;
             --bg-card: #1e1e1e;
             --accent: #ffc000;
             --accent-hover: #e0a800;
@@ -55,3 +55,219 @@
             background: #2b2b2b;
             padding: 5px 12px;
             border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            cursor: pointer;
+        }
+
+        .container {
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: #2a2a2a;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--accent);
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-danger { background-color: var(--danger); color: #fff; }
+        .btn-success { background-color: var(--success); color: #fff; }
+        .btn-secondary { background-color: #444; color: #fff; }
+
+        .signature-pad {
+            border: 1px dashed var(--accent);
+            border-radius: 6px;
+            background-color: #000;
+            touch-action: none;
+            width: 100%;
+            height: 150px;
+            margin-top: 5px;
+        }
+
+        .nav-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-card);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .hidden { display: none !important; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .status-pendente { background: #e67e22; color: #fff; }
+        .status-aprovado { background: var(--success); color: #fff; }
+        .status-rejeitado { background: var(--danger); color: #fff; }
+
+        .doc-preview {
+            max-width: 100%;
+            max-height: 150px;
+            margin-top: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🚚 MSN Entregas</h1>
+        <div id="userBadge" class="user-badge" onclick="logout()">Selecionar Perfil</div>
+    </header>
+
+    <div class="container">
+
+        <!-- SELEÇÃO DE PERFIL / LOGIN -->
+        <div id="viewRoleSelect" class="card">
+            <h2>Escolha como deseja acessar:</h2>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <button class="btn" onclick="selectRole('cliente')">👤 Sou Cliente (Solicitar Entrega)</button>
+                <button class="btn btn-secondary" onclick="selectRole('prestador')">🛵 Sou Prestador / Motorista</button>
+                <button class="btn btn-secondary" style="background:#333;" onclick="selectRole('admin')">🔑 Sou Dono / Administrador</button>
+            </div>
+        </div>
+
+        <!-- CADASTRO DE PRESTADOR -->
+        <div id="viewCadastroPrestador" class="card hidden">
+            <h2>Cadastro de Prestador / Motorista</h2>
+            <form id="formPrestador" onsubmit="salvarCadastroPrestador(event)">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="presNome" required>
+                </div>
+                <div class="form-group">
+                    <label>CPF</label>
+                    <input type="text" id="presCPF" required>
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp / Celular</label>
+                    <input type="tel" id="presWhats" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Veículo</label>
+                    <select id="presVeiculo" required>
+                        <option value="Motoboy">Moto / Motoboy</option>
+                        <option value="Carro">Carro Passeio</option>
+                        <option value="Fiorino/Van">Fiorino / Van</option>
+                        <option value="Caminhao">Caminhão</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Placa do Veículo</label>
+                    <input type="text" id="presPlaca" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Anexar Foto da CNH (Habilitação)</label>
+                    <input type="file" id="fileCNH" accept="image/*,.pdf" required onchange="previewDoc(this, 'prevCNH')">
+                    <img id="prevCNH" class="doc-preview hidden">
+                </div>
+
+                <div class="form-group">
+                    <label>Anexar Documento do Veículo (CRLV)</label>
+                    <input type="file" id="fileCRLV" accept="image/*,.pdf" required onchange="previewDoc(this, 'prevCRLV')">
+                    <img id="prevCRLV" class="doc-preview hidden">
+                </div>
+
+                <div class="form-group">
+                    <label>Assinatura Digital (Desenhe abaixo com o dedo)</label>
+                    <canvas id="canvasSignature" class="signature-pad"></canvas>
+                    <button type="button" class="btn btn-secondary" style="padding: 5px; margin-top: 5px; font-size: 0.8rem;" onclick="limparAssinatura()">Limpar Assinatura</button>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="margin-top: 15px;">Enviar Cadastro para Aprovação</button>
+            </form>
+        </div>
+
+        <!-- TELA AGUARDANDO APROVAÇÃO -->
+        <div id="viewAguardandoAprovacao" class="card hidden" style="text-align: center;">
+            <h2 style="color: var(--accent);">⏳ Cadastro em Análise</h2>
+            <p style="margin: 15px 0; color: var(--text-muted);">Os seus documentos e a assinatura foram enviados com sucesso.</p>
+            <p>O Administrador está a analisar o seu registo. Assim que for aprovado, poderá aceder ao painel de corridas.</p>
+            <button class="btn btn-secondary" style="margin-top: 20px;" onclick="logout()">Voltar ao Início</button>
+        </div>
+
+        <!-- PAINEL CLIENTE -->
+        <div id="viewCliente" class="card hidden">
+            <h2>Solicitar Nova Entrega</h2>
+            <div class="form-group">
+                <label>Endereço de Retirada</label>
+                <input type="text" placeholder="Ex: Rua A, 123">
+            </div>
+            <div
