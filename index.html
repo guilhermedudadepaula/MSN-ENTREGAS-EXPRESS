@@ -45,9 +45,6 @@
         header h1 {
             font-size: 1.2rem;
             color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .user-badge {
@@ -113,13 +110,10 @@
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
-            transition: background 0.2s;
+            margin-top: 5px;
         }
 
-        .btn:hover {
-            background-color: var(--accent-hover);
-        }
-
+        .btn:hover { background-color: var(--accent-hover); }
         .btn-danger { background-color: var(--danger); color: #fff; }
         .btn-success { background-color: var(--success); color: #fff; }
         .btn-secondary { background-color: #444; color: #fff; }
@@ -149,22 +143,41 @@
 
     <header>
         <h1>🚚 MSN Entregas</h1>
-        <div id="userBadge" class="user-badge" onclick="logout()">Perfil</div>
+        <div id="userBadge" class="user-badge" onclick="voltarInicio()">Início</div>
     </header>
 
     <div class="container">
 
-        <!-- SELEÇÃO DE PERFIL / LOGIN -->
+        <!-- 1. SELEÇÃO DE PERFIL -->
         <div id="viewRoleSelect" class="card">
             <h2>Escolha como deseja aceder:</h2>
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-                <button class="btn" onclick="selectRole('cliente')">👤 Sou Cliente (Solicitar Entrega)</button>
-                <button class="btn btn-secondary" onclick="selectRole('prestador')">🛵 Sou Prestador / Motorista</button>
-                <button class="btn btn-secondary" style="background:#333;" onclick="selectRole('admin')">🔑 Sou Dono / Administrador</button>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <button class="btn" onclick="mudarTela('viewCliente')">👤 Sou Cliente (Solicitar Entrega)</button>
+                <button class="btn btn-secondary" onclick="mudarTela('viewCadastroPrestador')">🛵 Sou Prestador / Motorista</button>
+                <button class="btn btn-secondary" style="background:#333;" onclick="mudarTela('viewAdmin'); carregarAprovacoesAdmin();">🔑 Sou Dono / Administrador</button>
             </div>
         </div>
 
-        <!-- CADASTRO DE PRESTADOR -->
+        <!-- 2. CLIENTE -->
+        <div id="viewCliente" class="card hidden">
+            <h2>Solicitar Nova Entrega</h2>
+            <div class="form-group">
+                <label>Morada de Recolha</label>
+                <input type="text" placeholder="Ex: Rua A, 123">
+            </div>
+            <div class="form-group">
+                <label>Morada de Entrega</label>
+                <input type="text" placeholder="Ex: Av B, 456">
+            </div>
+            <div class="form-group">
+                <label>Observações</label>
+                <textarea rows="2" placeholder="Detalhes da entrega"></textarea>
+            </div>
+            <button class="btn" onclick="alert('Pedido simulado com sucesso!')">Chamar Entregador</button>
+            <button class="btn btn-secondary" style="margin-top:10px;" onclick="voltarInicio()">Voltar</button>
+        </div>
+
+        <!-- 3. CADASTRO DE PRESTADOR -->
         <div id="viewCadastroPrestador" class="card hidden">
             <h2>Cadastro de Prestador / Motorista</h2>
             <form id="formPrestador" onsubmit="salvarCadastroPrestador(event)">
@@ -177,106 +190,96 @@
                     <input type="text" id="presCPF" required>
                 </div>
                 <div class="form-group">
-                    <label>WhatsApp / Telemóvel</label>
+                    <label>WhatsApp</label>
                     <input type="tel" id="presWhats" required>
                 </div>
                 <div class="form-group">
-                    <label>Tipo de Veículo</label>
-                    <select id="presVeiculo" required>
-                        <option value="Motoboy">Moto / Motoboy</option>
-                        <option value="Carro">Carro Ligeiro</option>
+                    <label>Veículo</label>
+                    <select id="presVeiculo">
+                        <option value="Motoboy">Moto</option>
+                        <option value="Carro">Carro</option>
                         <option value="Fiorino/Van">Fiorino / Van</option>
                         <option value="Caminhao">Camião</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Matrícula do Veículo (Placa)</label>
+                    <label>Matrícula / Placa</label>
                     <input type="text" id="presPlaca" required>
                 </div>
-                
                 <div class="form-group">
-                    <label>Anexar Foto da CNH (Carta de Condução)</label>
-                    <input type="file" id="fileCNH" accept="image/*,.pdf" required onchange="previewDoc(this, 'prevCNH')">
+                    <label>Anexar CNH</label>
+                    <input type="file" id="fileCNH" accept="image/*" required onchange="previewDoc(this, 'prevCNH')">
                     <img id="prevCNH" class="doc-preview hidden">
                 </div>
-
                 <div class="form-group">
-                    <label>Anexar Documento do Veículo (CRLV)</label>
-                    <input type="file" id="fileCRLV" accept="image/*,.pdf" required onchange="previewDoc(this, 'prevCRLV')">
+                    <label>Anexar CRLV (Documento do Veículo)</label>
+                    <input type="file" id="fileCRLV" accept="image/*" required onchange="previewDoc(this, 'prevCRLV')">
                     <img id="prevCRLV" class="doc-preview hidden">
                 </div>
-
                 <div class="form-group">
-                    <label>Assinatura Digital (Desenhe abaixo com o dedo)</label>
+                    <label>Assinatura Digital (Desenhe abaixo)</label>
                     <canvas id="canvasSignature" class="signature-pad"></canvas>
-                    <button type="button" class="btn btn-secondary" style="padding: 5px; margin-top: 5px; font-size: 0.8rem;" onclick="limparAssinatura()">Limpar Assinatura</button>
+                    <button type="button" class="btn btn-secondary" style="padding: 5px; font-size: 0.8rem;" onclick="limparAssinatura()">Limpar</button>
                 </div>
-
-                <button type="submit" class="btn btn-success" style="margin-top: 15px;">Enviar Cadastro para Aprovação</button>
+                <button type="submit" class="btn btn-success" style="margin-top: 15px;">Enviar para Aprovação</button>
+                <button type="button" class="btn btn-secondary" style="margin-top: 10px;" onclick="voltarInicio()">Voltar</button>
             </form>
         </div>
 
-        <!-- TELA AGUARDANDO APROVAÇÃO -->
+        <!-- 4. AGUARDANDO APROVAÇÃO -->
         <div id="viewAguardandoAprovacao" class="card hidden" style="text-align: center;">
             <h2 style="color: var(--accent);">⏳ Cadastro em Análise</h2>
-            <p style="margin: 15px 0; color: var(--text-muted);">Os seus documentos e a assinatura foram enviados com sucesso.</p>
-            <p>O Administrador está a analisar o seu registo. Assim que for aprovado, poderá aceder ao painel de corridas.</p>
-            <button class="btn btn-secondary" style="margin-top: 20px;" onclick="logout()">Voltar ao Início</button>
+            <p style="margin: 15px 0; color: var(--text-muted);">Os seus documentos e assinatura foram enviados.</p>
+            <button class="btn btn-secondary" onclick="voltarInicio()">Voltar ao Início</button>
         </div>
 
-        <!-- PAINEL CLIENTE -->
-        <div id="viewCliente" class="card hidden">
-            <h2>Solicitar Nova Entrega</h2>
-            <div class="form-group">
-                <label>Morada de Recolha</label>
-                <input type="text" placeholder="Ex: Rua A, 123">
-            </div>
-            <div class="form-group">
-                <label>Morada de Entrega</label>
-                <input type="text" placeholder="Ex: Av B, 456">
-            </div>
-            <div class="form-group">
-                <label>Observações / Detalhes</label>
-                <textarea rows="2" placeholder="Ex: Entregar ao cuidado de Fulano"></textarea>
-            </div>
-            <button class="btn">Calcular e Chamar Entregador</button>
-        </div>
-
-        <!-- PAINEL PRESTADOR (APROVADO) -->
-        <div id="viewPrestador" class="card hidden">
-            <h2>Painel do Motorista</h2>
-            <p style="color: var(--success); font-size: 0.9rem; margin-bottom: 10px;">Estado: ✅ Aprovado</p>
-            <div class="card" style="background: #252525;">
-                <p><strong>Corridas Disponíveis:</strong> 0 de momento</p>
-            </div>
-        </div>
-
-        <!-- PAINEL ADMIN (DONO) -->
+        <!-- 5. PAINEL ADMIN -->
         <div id="viewAdmin" class="card hidden">
             <h2>Painel do Administrador (Dono)</h2>
             <div id="listaAprovacoes" style="margin-top: 10px;">
-                <!-- Lista dinâmica de cadastros -->
+                <!-- Carregado via JS -->
             </div>
+            <button class="btn btn-secondary" style="margin-top: 15px;" onclick="voltarInicio()">Voltar ao Início</button>
         </div>
 
     </div>
 
     <script>
-        let currentRole = null;
-        let prestadores = JSON.parse(localStorage.getItem('msn_prestadores')) || [];
+        // Funções de navegação direta e segura
+        function mudarTela(idTela) {
+            document.getElementById('viewRoleSelect').classList.add('hidden');
+            document.getElementById('viewCliente').classList.add('hidden');
+            document.getElementById('viewCadastroPrestador').classList.add('hidden');
+            document.getElementById('viewAguardandoAprovacao').classList.add('hidden');
+            document.getElementById('viewAdmin').classList.add('hidden');
 
+            document.getElementById(idTela).classList.remove('hidden');
+
+            if (idTela === 'viewCadastroPrestador') {
+                setTimeout(resizeCanvas, 100);
+            }
+        }
+
+        function voltarInicio() {
+            document.getElementById('viewCliente').classList.add('hidden');
+            document.getElementById('viewCadastroPrestador').classList.add('hidden');
+            document.getElementById('viewAguardandoAprovacao').classList.add('hidden');
+            document.getElementById('viewAdmin').classList.add('hidden');
+            document.getElementById('viewRoleSelect').classList.remove('hidden');
+        }
+
+        // Canvas de Assinatura
         const canvas = document.getElementById('canvasSignature');
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
 
         function resizeCanvas() {
             if (!canvas) return;
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+            canvas.width = canvas.offsetWidth || 300;
+            canvas.height = 150;
             ctx.strokeStyle = "#ffc000";
             ctx.lineWidth = 2;
         }
-        window.addEventListener('resize', resizeCanvas);
 
         function startDrawing(e) {
             isDrawing = true;
@@ -324,29 +327,13 @@
             }
         }
 
-        function selectRole(role) {
-            currentRole = role;
-            document.getElementById('viewRoleSelect').classList.add('hidden');
-            
-            if (role === 'cliente') {
-                document.getElementById('viewCliente').classList.remove('hidden');
-                document.getElementById('userBadge').innerText = 'Cliente';
-            } else if (role === 'prestador') {
-                document.getElementById('viewCadastroPrestador').classList.remove('hidden');
-                document.getElementById('userBadge').innerText = 'Prestador';
-                setTimeout(resizeCanvas, 200);
-            } else if (role === 'admin') {
-                document.getElementById('viewAdmin').classList.remove('hidden');
-                document.getElementById('userBadge').innerText = 'Dono / Admin';
-                carregarAprovacoesAdmin();
-            }
-        }
+        let prestadores = JSON.parse(localStorage.getItem('msn_prestadores')) || [];
 
         function salvarCadastroPrestador(e) {
             e.preventDefault();
             const sigData = canvas.toDataURL();
             
-            const novoPrestador = {
+            const novo = {
                 id: Date.now(),
                 nome: document.getElementById('presNome').value,
                 cpf: document.getElementById('presCPF').value,
@@ -359,11 +346,10 @@
                 status: 'pendente'
             };
 
-            prestadores.push(novoPrestador);
+            prestadores.push(novo);
             localStorage.setItem('msn_prestadores', JSON.stringify(prestadores));
 
-            document.getElementById('viewCadastroPrestador').classList.add('hidden');
-            document.getElementById('viewAguardandoAprovacao').classList.remove('hidden');
+            mudarTela('viewAguardandoAprovacao');
         }
 
         function carregarAprovacoesAdmin() {
@@ -386,18 +372,23 @@
                     <p><strong>CPF:</strong> ${p.cpf} | <strong>WhatsApp:</strong> ${p.whats}</p>
                     <p><strong>Veículo:</strong> ${p.veiculo} (${p.placa})</p>
                     <div style="margin: 10px 0;">
-                        <p style="font-size:0.8rem; color:var(--text-muted);">Assinatura Digital:</p>
-                        <img src="${p.assinatura}" style="max-height: 50px; background:#fff; border-radius:4px;">
+                        <p style="font-size:0.8rem; color:var(--text-muted);">Assinatura:</p>
+                        <img src="${p.assinatura}" style="max-height: 40px; background:#fff; border-radius:4px;">
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn btn-success" onclick="alterarStatusPrestador(${p.id}, 'aprovado')">Aprovar</button>
-                        <button class="btn btn-danger" onclick="alterarStatusPrestador(${p.id}, 'rejeitado')">Rejeitar</button>
+                        <button class="btn btn-success" onclick="mudarStatus(${p.id}, 'aprovado')">Aprovar</button>
+                        <button class="btn btn-danger" onclick="mudarStatus(${p.id}, 'rejeitado')">Rejeitar</button>
                     </div>
                 `;
                 container.appendChild(item);
             });
         }
 
-        function alterarStatusPrestador(id, status) {
+        function mudarStatus(id, status) {
             prestadores = prestadores.map(p => p.id === id ? {...p, status: status} : p);
-            localStorage.setItem('msn
+            localStorage.setItem('msn_prestadores', JSON.stringify(prestadores));
+            carregarAprovacoesAdmin();
+        }
+    </script>
+</body>
+</html>
