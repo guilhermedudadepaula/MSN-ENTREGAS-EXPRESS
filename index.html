@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MSN Entregas Express</title>
-    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIk1TTiBFbnRyZWdhcyBFeHByZXNzIiwKICAic2hvcnRfbmFtZSI6ICJNU04gRW50cmVnYXMiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxMmExMWYiLAogICJ0aGVtZV9jb2xvciI6ICIjZmZjMDAwIgp9">
     <style>
         :root {
             --bg-main: #121212;
@@ -26,7 +25,7 @@
         }
 
         body {
-            background-color: var(--bg-main);
+            background-color: var(--bg-main) !important;
             color: var(--text-main);
             padding-bottom: 70px;
         }
@@ -135,45 +134,7 @@
             margin-top: 5px;
         }
 
-        .nav-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: var(--bg-card);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid var(--border-color);
-            z-index: 1000;
-        }
-
-        .nav-item {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.75rem;
-            text-align: center;
-            flex: 1;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--accent);
-            font-weight: bold;
-        }
-
         .hidden { display: none !important; }
-
-        .status-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .status-pendente { background: #e67e22; color: #fff; }
-        .status-aprovado { background: var(--success); color: #fff; }
-        .status-rejeitado { background: var(--danger); color: #fff; }
 
         .doc-preview {
             max-width: 100%;
@@ -188,7 +149,7 @@
 
     <header>
         <h1>🚚 MSN Entregas</h1>
-        <div id="userBadge" class="user-badge" onclick="logout()">Selecionar Perfil</div>
+        <div id="userBadge" class="user-badge" onclick="logout()">Perfil</div>
     </header>
 
     <div class="container">
@@ -248,26 +209,4 @@
                 <div class="form-group">
                     <label>Assinatura Digital (Desenhe abaixo com o dedo)</label>
                     <canvas id="canvasSignature" class="signature-pad"></canvas>
-                    <button type="button" class="btn btn-secondary" style="padding: 5px; margin-top: 5px; font-size: 0.8rem;" onclick="limparAssinatura()">Limpar Assinatura</button>
-                </div>
-
-                <button type="submit" class="btn btn-success" style="margin-top: 15px;">Enviar Cadastro para Aprovação</button>
-            </form>
-        </div>
-
-        <!-- TELA AGUARDANDO APROVAÇÃO -->
-        <div id="viewAguardandoAprovacao" class="card hidden" style="text-align: center;">
-            <h2 style="color: var(--accent);">⏳ Cadastro em Análise</h2>
-            <p style="margin: 15px 0; color: var(--text-muted);">Os seus documentos e a assinatura foram enviados com sucesso.</p>
-            <p>O Administrador está a analisar o seu registo. Assim que for aprovado, poderá aceder ao painel de corridas.</p>
-            <button class="btn btn-secondary" style="margin-top: 20px;" onclick="logout()">Voltar ao Início</button>
-        </div>
-
-        <!-- PAINEL CLIENTE -->
-        <div id="viewCliente" class="card hidden">
-            <h2>Solicitar Nova Entrega</h2>
-            <div class="form-group">
-                <label>Endereço de Retirada</label>
-                <input type="text" placeholder="Ex: Rua A, 123">
-            </div>
-            <div
+                    <button type="button" class="btn btn-secondary" style="padding: 5px; margin-top: 5px; font-size: 0.8
