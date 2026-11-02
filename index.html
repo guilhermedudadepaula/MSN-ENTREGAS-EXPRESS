@@ -25,7 +25,7 @@
         }
 
         body {
-            background-color: var(--bg-main) !important;
+            background-color: var(--bg-main);
             color: var(--text-main);
             padding-bottom: 70px;
         }
@@ -156,7 +156,7 @@
 
         <!-- SELEÇÃO DE PERFIL / LOGIN -->
         <div id="viewRoleSelect" class="card">
-            <h2>Escolha como deseja acessar:</h2>
+            <h2>Escolha como deseja aceder:</h2>
             <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
                 <button class="btn" onclick="selectRole('cliente')">👤 Sou Cliente (Solicitar Entrega)</button>
                 <button class="btn btn-secondary" onclick="selectRole('prestador')">🛵 Sou Prestador / Motorista</button>
@@ -177,25 +177,25 @@
                     <input type="text" id="presCPF" required>
                 </div>
                 <div class="form-group">
-                    <label>WhatsApp / Celular</label>
+                    <label>WhatsApp / Telemóvel</label>
                     <input type="tel" id="presWhats" required>
                 </div>
                 <div class="form-group">
                     <label>Tipo de Veículo</label>
                     <select id="presVeiculo" required>
                         <option value="Motoboy">Moto / Motoboy</option>
-                        <option value="Carro">Carro Passeio</option>
+                        <option value="Carro">Carro Ligeiro</option>
                         <option value="Fiorino/Van">Fiorino / Van</option>
-                        <option value="Caminhao">Caminhão</option>
+                        <option value="Caminhao">Camião</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Placa do Veículo</label>
+                    <label>Matrícula do Veículo (Placa)</label>
                     <input type="text" id="presPlaca" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Anexar Foto da CNH (Habilitação)</label>
+                    <label>Anexar Foto da CNH (Carta de Condução)</label>
                     <input type="file" id="fileCNH" accept="image/*,.pdf" required onchange="previewDoc(this, 'prevCNH')">
                     <img id="prevCNH" class="doc-preview hidden">
                 </div>
@@ -209,4 +209,195 @@
                 <div class="form-group">
                     <label>Assinatura Digital (Desenhe abaixo com o dedo)</label>
                     <canvas id="canvasSignature" class="signature-pad"></canvas>
-                    <button type="button" class="btn btn-secondary" style="padding: 5px; margin-top: 5px; font-size: 0.8
+                    <button type="button" class="btn btn-secondary" style="padding: 5px; margin-top: 5px; font-size: 0.8rem;" onclick="limparAssinatura()">Limpar Assinatura</button>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="margin-top: 15px;">Enviar Cadastro para Aprovação</button>
+            </form>
+        </div>
+
+        <!-- TELA AGUARDANDO APROVAÇÃO -->
+        <div id="viewAguardandoAprovacao" class="card hidden" style="text-align: center;">
+            <h2 style="color: var(--accent);">⏳ Cadastro em Análise</h2>
+            <p style="margin: 15px 0; color: var(--text-muted);">Os seus documentos e a assinatura foram enviados com sucesso.</p>
+            <p>O Administrador está a analisar o seu registo. Assim que for aprovado, poderá aceder ao painel de corridas.</p>
+            <button class="btn btn-secondary" style="margin-top: 20px;" onclick="logout()">Voltar ao Início</button>
+        </div>
+
+        <!-- PAINEL CLIENTE -->
+        <div id="viewCliente" class="card hidden">
+            <h2>Solicitar Nova Entrega</h2>
+            <div class="form-group">
+                <label>Morada de Recolha</label>
+                <input type="text" placeholder="Ex: Rua A, 123">
+            </div>
+            <div class="form-group">
+                <label>Morada de Entrega</label>
+                <input type="text" placeholder="Ex: Av B, 456">
+            </div>
+            <div class="form-group">
+                <label>Observações / Detalhes</label>
+                <textarea rows="2" placeholder="Ex: Entregar ao cuidado de Fulano"></textarea>
+            </div>
+            <button class="btn">Calcular e Chamar Entregador</button>
+        </div>
+
+        <!-- PAINEL PRESTADOR (APROVADO) -->
+        <div id="viewPrestador" class="card hidden">
+            <h2>Painel do Motorista</h2>
+            <p style="color: var(--success); font-size: 0.9rem; margin-bottom: 10px;">Estado: ✅ Aprovado</p>
+            <div class="card" style="background: #252525;">
+                <p><strong>Corridas Disponíveis:</strong> 0 de momento</p>
+            </div>
+        </div>
+
+        <!-- PAINEL ADMIN (DONO) -->
+        <div id="viewAdmin" class="card hidden">
+            <h2>Painel do Administrador (Dono)</h2>
+            <div id="listaAprovacoes" style="margin-top: 10px;">
+                <!-- Lista dinâmica de cadastros -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentRole = null;
+        let prestadores = JSON.parse(localStorage.getItem('msn_prestadores')) || [];
+
+        const canvas = document.getElementById('canvasSignature');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            ctx.strokeStyle = "#ffc000";
+            ctx.lineWidth = 2;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function startDrawing(e) {
+            isDrawing = true;
+            ctx.beginPath();
+            const pos = getPos(e);
+            ctx.moveTo(pos.x, pos.y);
+        }
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+        function stopDrawing() { isDrawing = false; }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        if (canvas) {
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function limparAssinatura() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function previewDoc(input, targetId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(targetId);
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function selectRole(role) {
+            currentRole = role;
+            document.getElementById('viewRoleSelect').classList.add('hidden');
+            
+            if (role === 'cliente') {
+                document.getElementById('viewCliente').classList.remove('hidden');
+                document.getElementById('userBadge').innerText = 'Cliente';
+            } else if (role === 'prestador') {
+                document.getElementById('viewCadastroPrestador').classList.remove('hidden');
+                document.getElementById('userBadge').innerText = 'Prestador';
+                setTimeout(resizeCanvas, 200);
+            } else if (role === 'admin') {
+                document.getElementById('viewAdmin').classList.remove('hidden');
+                document.getElementById('userBadge').innerText = 'Dono / Admin';
+                carregarAprovacoesAdmin();
+            }
+        }
+
+        function salvarCadastroPrestador(e) {
+            e.preventDefault();
+            const sigData = canvas.toDataURL();
+            
+            const novoPrestador = {
+                id: Date.now(),
+                nome: document.getElementById('presNome').value,
+                cpf: document.getElementById('presCPF').value,
+                whats: document.getElementById('presWhats').value,
+                veiculo: document.getElementById('presVeiculo').value,
+                placa: document.getElementById('presPlaca').value,
+                cnh: document.getElementById('prevCNH').src,
+                crlv: document.getElementById('prevCRLV').src,
+                assinatura: sigData,
+                status: 'pendente'
+            };
+
+            prestadores.push(novoPrestador);
+            localStorage.setItem('msn_prestadores', JSON.stringify(prestadores));
+
+            document.getElementById('viewCadastroPrestador').classList.add('hidden');
+            document.getElementById('viewAguardandoAprovacao').classList.remove('hidden');
+        }
+
+        function carregarAprovacoesAdmin() {
+            const container = document.getElementById('listaAprovacoes');
+            container.innerHTML = '';
+
+            const pendentes = prestadores.filter(p => p.status === 'pendente');
+
+            if (pendentes.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);">Nenhum prestador a aguardar aprovação.</p>';
+                return;
+            }
+
+            pendentes.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'card';
+                item.style.background = '#252525';
+                item.innerHTML = `
+                    <p><strong>Nome:</strong> ${p.nome}</p>
+                    <p><strong>CPF:</strong> ${p.cpf} | <strong>WhatsApp:</strong> ${p.whats}</p>
+                    <p><strong>Veículo:</strong> ${p.veiculo} (${p.placa})</p>
+                    <div style="margin: 10px 0;">
+                        <p style="font-size:0.8rem; color:var(--text-muted);">Assinatura Digital:</p>
+                        <img src="${p.assinatura}" style="max-height: 50px; background:#fff; border-radius:4px;">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-success" onclick="alterarStatusPrestador(${p.id}, 'aprovado')">Aprovar</button>
+                        <button class="btn btn-danger" onclick="alterarStatusPrestador(${p.id}, 'rejeitado')">Rejeitar</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function alterarStatusPrestador(id, status) {
+            prestadores = prestadores.map(p => p.id === id ? {...p, status: status} : p);
+            localStorage.setItem('msn
