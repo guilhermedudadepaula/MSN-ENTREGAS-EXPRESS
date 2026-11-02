@@ -25,7 +25,7 @@
         }
 
         body {
-            background-color: var(--bg-main);
+            background-color: var(--bg-main) !important;
             color: var(--text-main);
             padding-bottom: 70px;
         }
@@ -102,7 +102,7 @@
 
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: none;
             border-radius: 6px;
             background-color: var(--accent);
@@ -111,9 +111,11 @@
             font-size: 1rem;
             cursor: pointer;
             margin-top: 5px;
+            display: block;
+            text-align: center;
         }
 
-        .btn:hover { background-color: var(--accent-hover); }
+        .btn:active { transform: scale(0.98); }
         .btn-danger { background-color: var(--danger); color: #fff; }
         .btn-success { background-color: var(--success); color: #fff; }
         .btn-secondary { background-color: #444; color: #fff; }
@@ -124,7 +126,7 @@
             background-color: #000;
             touch-action: none;
             width: 100%;
-            height: 150px;
+            height: 140px;
             margin-top: 5px;
         }
 
@@ -143,22 +145,22 @@
 
     <header>
         <h1>🚚 MSN Entregas</h1>
-        <div id="userBadge" class="user-badge" onclick="voltarInicio()">Início</div>
+        <div class="user-badge" onclick="abrirTela('viewRoleSelect')">Menu Inicial</div>
     </header>
 
     <div class="container">
 
-        <!-- 1. SELEÇÃO DE PERFIL -->
+        <!-- 1. TELA SELEÇÃO DE PERFIL -->
         <div id="viewRoleSelect" class="card">
             <h2>Escolha como deseja aceder:</h2>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                <button class="btn" onclick="mudarTela('viewCliente')">👤 Sou Cliente (Solicitar Entrega)</button>
-                <button class="btn btn-secondary" onclick="mudarTela('viewCadastroPrestador')">🛵 Sou Prestador / Motorista</button>
-                <button class="btn btn-secondary" style="background:#333;" onclick="mudarTela('viewAdmin'); carregarAprovacoesAdmin();">🔑 Sou Dono / Administrador</button>
+            <div style="margin-top: 15px;">
+                <button type="button" class="btn" onclick="abrirTela('viewCliente')">👤 Sou Cliente (Solicitar Entrega)</button>
+                <button type="button" class="btn btn-secondary" onclick="abrirTela('viewCadastroPrestador')">🛵 Sou Prestador / Motorista</button>
+                <button type="button" class="btn btn-secondary" style="background:#333; margin-top:10px;" onclick="abrirAdmin()">🔑 Sou Dono / Administrador</button>
             </div>
         </div>
 
-        <!-- 2. CLIENTE -->
+        <!-- 2. TELA CLIENTE -->
         <div id="viewCliente" class="card hidden">
             <h2>Solicitar Nova Entrega</h2>
             <div class="form-group">
@@ -171,16 +173,16 @@
             </div>
             <div class="form-group">
                 <label>Observações</label>
-                <textarea rows="2" placeholder="Detalhes da entrega"></textarea>
+                <textarea rows="2" placeholder="Ex: Falar com o porteiro"></textarea>
             </div>
-            <button class="btn" onclick="alert('Pedido simulado com sucesso!')">Chamar Entregador</button>
-            <button class="btn btn-secondary" style="margin-top:10px;" onclick="voltarInicio()">Voltar</button>
+            <button type="button" class="btn" onclick="alert('Pedido enviado com sucesso!')">Chamar Entregador</button>
+            <button type="button" class="btn btn-secondary" style="margin-top:10px;" onclick="abrirTela('viewRoleSelect')">Voltar</button>
         </div>
 
-        <!-- 3. CADASTRO DE PRESTADOR -->
+        <!-- 3. TELA CADASTRO MOTORISTA / PRESTADOR -->
         <div id="viewCadastroPrestador" class="card hidden">
-            <h2>Cadastro de Prestador / Motorista</h2>
-            <form id="formPrestador" onsubmit="salvarCadastroPrestador(event)">
+            <h2>Cadastro de Motorista</h2>
+            <form onsubmit="salvarPrestador(event)">
                 <div class="form-group">
                     <label>Nome Completo</label>
                     <input type="text" id="presNome" required>
@@ -207,133 +209,110 @@
                     <input type="text" id="presPlaca" required>
                 </div>
                 <div class="form-group">
-                    <label>Anexar CNH</label>
-                    <input type="file" id="fileCNH" accept="image/*" required onchange="previewDoc(this, 'prevCNH')">
+                    <label>Anexar CNH (Foto)</label>
+                    <input type="file" accept="image/*" required onchange="carregarFoto(this, 'prevCNH')">
                     <img id="prevCNH" class="doc-preview hidden">
                 </div>
                 <div class="form-group">
                     <label>Anexar CRLV (Documento do Veículo)</label>
-                    <input type="file" id="fileCRLV" accept="image/*" required onchange="previewDoc(this, 'prevCRLV')">
+                    <input type="file" accept="image/*" required onchange="carregarFoto(this, 'prevCRLV')">
                     <img id="prevCRLV" class="doc-preview hidden">
                 </div>
                 <div class="form-group">
-                    <label>Assinatura Digital (Desenhe abaixo)</label>
-                    <canvas id="canvasSignature" class="signature-pad"></canvas>
-                    <button type="button" class="btn btn-secondary" style="padding: 5px; font-size: 0.8rem;" onclick="limparAssinatura()">Limpar</button>
+                    <label>Assinatura Digital (Desenhe no quadro abaixo)</label>
+                    <canvas id="canvasSig" class="signature-pad"></canvas>
+                    <button type="button" class="btn btn-secondary" style="padding: 5px; font-size: 0.8rem;" onclick="limparAssinatura()">Limpar Assinatura</button>
                 </div>
-                <button type="submit" class="btn btn-success" style="margin-top: 15px;">Enviar para Aprovação</button>
-                <button type="button" class="btn btn-secondary" style="margin-top: 10px;" onclick="voltarInicio()">Voltar</button>
+                <button type="submit" class="btn btn-success" style="margin-top: 15px;">Enviar Cadastro para Aprovação</button>
+                <button type="button" class="btn btn-secondary" style="margin-top: 10px;" onclick="abrirTela('viewRoleSelect')">Voltar</button>
             </form>
         </div>
 
-        <!-- 4. AGUARDANDO APROVAÇÃO -->
-        <div id="viewAguardandoAprovacao" class="card hidden" style="text-align: center;">
+        <!-- 4. TELA AGUARDANDO APROVAÇÃO -->
+        <div id="viewAguardando" class="card hidden" style="text-align: center;">
             <h2 style="color: var(--accent);">⏳ Cadastro em Análise</h2>
-            <p style="margin: 15px 0; color: var(--text-muted);">Os seus documentos e assinatura foram enviados.</p>
-            <button class="btn btn-secondary" onclick="voltarInicio()">Voltar ao Início</button>
+            <p style="margin: 15px 0; color: var(--text-muted);">Documentos e assinatura enviados com sucesso.</p>
+            <p>O Administrador irá analisar os dados para aprovação.</p>
+            <button type="button" class="btn btn-secondary" style="margin-top:20px;" onclick="abrirTela('viewRoleSelect')">Voltar ao Início</button>
         </div>
 
-        <!-- 5. PAINEL ADMIN -->
+        <!-- 5. TELA PAINEL ADMIN (DONO) -->
         <div id="viewAdmin" class="card hidden">
             <h2>Painel do Administrador (Dono)</h2>
-            <div id="listaAprovacoes" style="margin-top: 10px;">
-                <!-- Carregado via JS -->
+            <div id="listaCadastros" style="margin-top: 10px;">
+                <!-- Lista de motoristas cadastrados -->
             </div>
-            <button class="btn btn-secondary" style="margin-top: 15px;" onclick="voltarInicio()">Voltar ao Início</button>
+            <button type="button" class="btn btn-secondary" style="margin-top: 15px;" onclick="abrirTela('viewRoleSelect')">Voltar ao Início</button>
         </div>
 
     </div>
 
     <script>
-        // Funções de navegação direta e segura
-        function mudarTela(idTela) {
-            document.getElementById('viewRoleSelect').classList.add('hidden');
-            document.getElementById('viewCliente').classList.add('hidden');
-            document.getElementById('viewCadastroPrestador').classList.add('hidden');
-            document.getElementById('viewAguardandoAprovacao').classList.add('hidden');
-            document.getElementById('viewAdmin').classList.add('hidden');
-
-            document.getElementById(idTela).classList.remove('hidden');
+        // Função universal para alternar telas sem erros
+        function abrirTela(idTela) {
+            var telas = ['viewRoleSelect', 'viewCliente', 'viewCadastroPrestador', 'viewAguardando', 'viewAdmin'];
+            for (var i = 0; i < telas.length; i++) {
+                var el = document.getElementById(telas[i]);
+                if (el) el.classList.add('hidden');
+            }
+            var telaDestino = document.getElementById(idTela);
+            if (telaDestino) telaDestino.classList.remove('hidden');
 
             if (idTela === 'viewCadastroPrestador') {
-                setTimeout(resizeCanvas, 100);
+                setTimeout(iniciarCanvas, 100);
             }
         }
 
-        function voltarInicio() {
-            document.getElementById('viewCliente').classList.add('hidden');
-            document.getElementById('viewCadastroPrestador').classList.add('hidden');
-            document.getElementById('viewAguardandoAprovacao').classList.add('hidden');
-            document.getElementById('viewAdmin').classList.add('hidden');
-            document.getElementById('viewRoleSelect').classList.remove('hidden');
-        }
-
-        // Canvas de Assinatura
-        const canvas = document.getElementById('canvasSignature');
-        const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-
-        function resizeCanvas() {
+        // Lógica do Canvas (Assinatura)
+        var canvas, ctx, desenhando = false;
+        function iniciarCanvas() {
+            canvas = document.getElementById('canvasSig');
             if (!canvas) return;
+            ctx = canvas.getContext('2d');
             canvas.width = canvas.offsetWidth || 300;
-            canvas.height = 150;
+            canvas.height = 140;
             ctx.strokeStyle = "#ffc000";
             ctx.lineWidth = 2;
+
+            canvas.onmousedown = function(e) { desenhando = true; ctx.beginPath(); ctx.moveTo(obterPos(e).x, obterPos(e).y); };
+            canvas.onmousemove = function(e) { if(desenhando) { ctx.lineTo(obterPos(e).x, obterPos(e).y); ctx.stroke(); } };
+            canvas.onmouseup = function() { desenhando = false; };
+            
+            canvas.ontouchstart = function(e) { desenhando = true; ctx.beginPath(); ctx.moveTo(obterPos(e).x, obterPos(e).y); };
+            canvas.ontouchmove = function(e) { if(desenhando) { ctx.lineTo(obterPos(e).x, obterPos(e).y); ctx.stroke(); } };
+            canvas.ontouchend = function() { desenhando = false; };
         }
 
-        function startDrawing(e) {
-            isDrawing = true;
-            ctx.beginPath();
-            const pos = getPos(e);
-            ctx.moveTo(pos.x, pos.y);
-        }
-        function draw(e) {
-            if (!isDrawing) return;
-            const pos = getPos(e);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-        }
-        function stopDrawing() { isDrawing = false; }
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        function obterPos(e) {
+            var rect = canvas.getBoundingClientRect();
+            var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            var clientY = e.touches ? e.touches[0].clientY : e.clientY;
             return { x: clientX - rect.left, y: clientY - rect.top };
         }
 
-        if (canvas) {
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('touchstart', startDrawing);
-            canvas.addEventListener('touchmove', draw);
-            canvas.addEventListener('touchend', stopDrawing);
-        }
-
         function limparAssinatura() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        function previewDoc(input, targetId) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById(targetId);
+        function carregarFoto(input, idImg) {
+            if (input.files && input.files[0]) {
+                var r = new FileReader();
+                r.onload = function(e) {
+                    var img = document.getElementById(idImg);
                     img.src = e.target.result;
                     img.classList.remove('hidden');
-                }
-                reader.readAsDataURL(file);
+                };
+                r.readAsDataURL(input.files[0]);
             }
         }
 
-        let prestadores = JSON.parse(localStorage.getItem('msn_prestadores')) || [];
+        // Dados e Aprovações
+        var bancoPrestadores = JSON.parse(localStorage.getItem('msn_cadastros')) || [];
 
-        function salvarCadastroPrestador(e) {
+        function salvarPrestador(e) {
             e.preventDefault();
-            const sigData = canvas.toDataURL();
-            
-            const novo = {
+            var sig = canvas ? canvas.toDataURL() : '';
+            var novomotorista = {
                 id: Date.now(),
                 nome: document.getElementById('presNome').value,
                 cpf: document.getElementById('presCPF').value,
@@ -342,52 +321,53 @@
                 placa: document.getElementById('presPlaca').value,
                 cnh: document.getElementById('prevCNH').src,
                 crlv: document.getElementById('prevCRLV').src,
-                assinatura: sigData,
+                assinatura: sig,
                 status: 'pendente'
             };
-
-            prestadores.push(novo);
-            localStorage.setItem('msn_prestadores', JSON.stringify(prestadores));
-
-            mudarTela('viewAguardandoAprovacao');
+            bancoPrestadores.push(novomotorista);
+            localStorage.setItem('msn_cadastros', JSON.stringify(bancoPrestadores));
+            abrirTela('viewAguardando');
         }
 
-        function carregarAprovacoesAdmin() {
-            const container = document.getElementById('listaAprovacoes');
-            container.innerHTML = '';
-
-            const pendentes = prestadores.filter(p => p.status === 'pendente');
+        function abrirAdmin() {
+            abrirTela('viewAdmin');
+            var cont = document.getElementById('listaCadastros');
+            cont.innerHTML = '';
+            var pendentes = bancoPrestadores.filter(function(p) { return p.status === 'pendente'; });
 
             if (pendentes.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-muted);">Nenhum prestador a aguardar aprovação.</p>';
+                cont.innerHTML = '<p style="color:var(--text-muted);">Nenhum cadastro a aguardar aprovação.</p>';
                 return;
             }
 
-            pendentes.forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'card';
-                item.style.background = '#252525';
-                item.innerHTML = `
+            for (var i = 0; i < pendentes.length; i++) {
+                var p = pendentes[i];
+                var card = document.createElement('div');
+                card.className = 'card';
+                card.style.background = '#252525';
+                card.innerHTML = `
                     <p><strong>Nome:</strong> ${p.nome}</p>
-                    <p><strong>CPF:</strong> ${p.cpf} | <strong>WhatsApp:</strong> ${p.whats}</p>
+                    <p><strong>CPF:</strong> ${p.cpf} | <strong>Whats:</strong> ${p.whats}</p>
                     <p><strong>Veículo:</strong> ${p.veiculo} (${p.placa})</p>
                     <div style="margin: 10px 0;">
-                        <p style="font-size:0.8rem; color:var(--text-muted);">Assinatura:</p>
-                        <img src="${p.assinatura}" style="max-height: 40px; background:#fff; border-radius:4px;">
+                        <p style="font-size:0.8rem; color:var(--text-muted);">Assinatura Digital:</p>
+                        <img src="${p.assinatura}" style="max-height: 45px; background:#fff; border-radius:4px;">
                     </div>
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn btn-success" onclick="mudarStatus(${p.id}, 'aprovado')">Aprovar</button>
-                        <button class="btn btn-danger" onclick="mudarStatus(${p.id}, 'rejeitado')">Rejeitar</button>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button type="button" class="btn btn-success" onclick="atualizarStatus(${p.id}, 'aprovado')">Aprovar</button>
+                        <button type="button" class="btn btn-danger" onclick="atualizarStatus(${p.id}, 'rejeitado')">Rejeitar</button>
                     </div>
                 `;
-                container.appendChild(item);
-            });
+                cont.appendChild(card);
+            }
         }
 
-        function mudarStatus(id, status) {
-            prestadores = prestadores.map(p => p.id === id ? {...p, status: status} : p);
-            localStorage.setItem('msn_prestadores', JSON.stringify(prestadores));
-            carregarAprovacoesAdmin();
+        function atualizarStatus(id, st) {
+            for (var i = 0; i < bancoPrestadores.length; i++) {
+                if (bancoPrestadores[i].id === id) bancoPrestadores[i].status = st;
+            }
+            localStorage.setItem('msn_cadastros', JSON.stringify(bancoPrestadores));
+            abrirAdmin();
         }
     </script>
 </body>
