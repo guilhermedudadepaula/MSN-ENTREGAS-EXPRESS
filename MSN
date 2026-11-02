@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSN Entregas Express - São Paulo ⇄ Campinas & Região</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#f59e0b',
+                            goldHover: '#d97706',
+                            dark: '#0a0e17',
+                            card: '#111827',
+                            innerCard: '#1f2937',
+                            border: '#374151',
+                            accent: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #070a12;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+
+        .golden-glow {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+        }
+
+        .gold-border-active {
+            border-color: #f59e0b !important;
+            background-color: rgba(245, 158, 11, 0.05);
+        }
+
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: #374151;
+            height: 6px;
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #f59e0b;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-[#0b101d] border-b border-gray-800 px-4 py-3 sticky top-0 z-40 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Branding -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg text-white tracking-tight flex items-center gap-2">
+                        MSN Entregas Express
+                    </h1>
+                    <p class="text-xs text-amber-500 font-medium flex items-center gap-1">
+                        <span>São Paulo</span> <i class="fa-solid fa-right-left text-[10px]"></i> <span>Campinas & Região</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex items-center bg-[#131b2e] p-1.5 rounded-xl border border-gray-800 text-xs md:text-sm font-semibold w-full md:w-auto justify-center">
+                <button id="nav-cliente" onclick="switchTab('cliente')" class="px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 bg-amber-500 text-slate-950 shadow-md">
+                    <i class="fa-solid fa-user-circle"></i>
+                    <span>App Cliente</span>
+                </button>
+                <button id="nav-driver" onclick="switchTab('driver')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white flex items-center gap-2 transition-all duration-200">
+                    <i class="fa-solid fa-motorcycle"></i>
+                    <span>App Motoboy / Motorista</span>
+                </button>
+                <button id="nav-admin" onclick="switchTab('admin')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white flex items-center gap-2 transition-all duration-200">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Painel Admin B2B</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6">
+
+        <!-- ================================================================= -->
+        <!-- VIEW 1: APP CLIENTE (Solicitar Frete ou Entrega) -->
+        <!-- ================================================================= -->
+        <div id="view-cliente" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- LEFT PANEL: SOLICITAR FRETE -->
+            <div class="lg:col-span-7 bg-[#0d1424] border border-gray-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+                
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-box text-amber-500"></i>
+                        Solicitar Frete ou Entrega
+                    </h2>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-gray-300 border border-gray-700">
+                        Estado de SP
+                    </span>
+                </div>
+
+                <!-- Presets Rotas com Pedágios Inclusos -->
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                        Rotas Frequentes (Pedágios Inclusos):
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="preset-routes">
+                        <button onclick="applyPreset('São Paulo (Brás)', 'Campinas (Centro)', 98, 28.60)" class="preset-btn text-left p-2.5 rounded-xl bg-[#131c30] border border-gray-800 hover:border-amber-500/50 transition duration-150">
+                            <div class="text-xs font-bold text-amber-400 flex items-center justify-between">
+                                <span>São Paulo → Campinas</span>
+                            </div>
+                            <div class="text-[11px] text-gray-400 mt-0.5">
+                                98 km • Pedágio: R$ 28.60
+                            </div>
+                        </button>
+                        <button onclick="applyPreset('Campinas (Industrial)', 'Piracicaba (Centro)', 75, 14.20)" class="preset-btn text-left p-2.5 rounded-xl bg-[#131c30] border border-gray-800 hover:border-amber-500/50 transition duration-150">
+                            <div class="text-xs font-bold text-gray-300">
+                                <span>Campinas → Piracicaba</span>
+                            </div>
+                            <div class="text-[11px] text-gray-400 mt-0.5">
+                                75 km • Pedágio: R$ 14.20
+                            </div>
+                        </button>
+                        <button onclick="applyPreset('São Paulo (Mooca)', 'Santos (Porto)', 78, 35.80)" class="preset-btn text-left p-2.5 rounded-xl bg-[#131c30] border border-gray-800 hover:border-amber-500/50 transition duration-150">
+                            <div class="text-xs font-bold text-gray-300">
+                                <span>São Paulo → Santos</span>
+                            </div>
+                            <div class="text-[11px] text-gray-400 mt-0.5">
+                                78 km • Pedágio: R$ 35.80
+                            </div>
+                        </button>
+                        <button onclick="applyPreset('Jundiaí (Distrito Ind.)', 'Campinas (Aeroporto Viracopos)', 42, 11.40)" class="preset-btn text-left p-2.5 rounded-xl bg-[#131c30] border border-gray-800 hover:border-amber-500/50 transition duration-150">
+                            <div class="text-xs font-bold text-gray-300">
+                                <span>Jundiaí → Campinas</span>
+                            </div>
+                            <div class="text-[11px] text-gray-400 mt-0.5">
+                                42 km • Pedágio: R$ 11.40
+                            </div>
+                        </button>
+                        <button onclick="applyPreset('Sorocaba (Centro)', 'São Paulo (Marginal Pinheiros)', 92, 22.50)" class="preset-btn text-left p-2.5 rounded-xl bg-[#131c30] border border-gray-800 hover:border-amber-500/50 transition duration-150 sm:col-span-2">
+                            <div class="text-xs font-bold text-gray-300">
+                                <span>Sorocaba → São Paulo</span>
+                            </div>
+                            <div class="text-[11px] text-gray-400 mt-0.5">
+                                92 km • Pedágio: R$ 22.50
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Locations Form -->
+                <div class="space-y-3 mb-5">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Local de Coleta (Origem)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-location-dot absolute left-3 top-3.5 text-emerald-500 text-sm"></i>
+                            <input type="text" id="origemInput" value="Rua 25 de Março, São Paulo - SP" class="w-full bg-[#131c30] border border-gray-800 rounded-xl pl-9 pr-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Local de Destino (Entrega)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-location-crosshairs absolute left-3 top-3.5 text-amber-500 text-sm"></i>
+                            <input type="text" id="destinoInput" value="Av. Francisco Glicério, Campinas - SP" class="w-full bg-[#131c30] border border-gray-800 rounded-xl pl-9 pr-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Descrição do Material</label>
+                        <input type="text" id="materialInput" value="Caixas de Componentes Eletrônicos" placeholder="Ex: Documentos, Caixas de Peças, Envelopes..." class="w-full bg-[#131c30] border border-gray-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                </div>
+
+                <!-- Weight Slider & Declared Value -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5 bg-[#111827] p-3.5 rounded-xl border border-gray-800">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-semibold text-gray-300">Peso da Carga</label>
+                            <span class="text-xs font-bold text-amber-400" id="pesoValDisplay">15 kg</span>
+                        </div>
+                        <input type="range" id="pesoInput" min="1" max="1500" value="15" oninput="updatePricingCalculations()" class="w-full cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                            <span>1 kg</span>
+                            <span>500 kg</span>
+                            <span>1.500 kg</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">Valor Declarado (R$)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-gray-400 text-xs font-bold">$</span>
+                            <input type="number" id="valorDeclaradoInput" value="1200" oninput="updatePricingCalculations()" class="w-full bg-[#131c30] border border-gray-800 rounded-lg pl-7 pr-3 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Selection Cards -->
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Categoria do Veículo</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="vehicle-grid">
+                        
+                        <!-- Motoboy -->
+                        <div id="veh-motoboy" onclick="selectVehicle('motoboy')" class="vehicle-card gold-border-active cursor-pointer p-3 rounded-xl bg-[#131c30] border border-gray-800 transition">
+                            <div class="flex items-center space-x-2.5">
+                                <i class="fa-solid fa-motorcycle text-amber-400 text-lg"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-white">Motoboy Express</div>
+                                    <div class="text-[10px] text-gray-400">Até 20 kg • Envelopes e pacotes</div>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs font-extrabold text-emerald-400" id="price-motoboy">
+                                Total: R$ 271.20
+                            </div>
+                        </div>
+
+                        <!-- Carro Passeio -->
+                        <div id="veh-carro" onclick="selectVehicle('carro')" class="vehicle-card cursor-pointer p-3 rounded-xl bg-[#131c30] border border-gray-800 transition">
+                            <div class="flex items-center space-x-2.5">
+                                <i class="fa-solid fa-car text-blue-400 text-lg"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-white">Carro / Passeio</div>
+                                    <div class="text-[10px] text-gray-400">Até 150 kg • Porta-malas livre</div>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs font-extrabold text-emerald-400" id="price-carro">
+                                Total: R$ 418.60
+                            </div>
+                        </div>
+
+                        <!-- Fiorino / Van -->
+                        <div id="veh-fiorino" onclick="selectVehicle('fiorino')" class="vehicle-card cursor-pointer p-3 rounded-xl bg-[#131c30] border border-gray-800 transition">
+                            <div class="flex items-center space-x-2.5">
+                                <i class="fa-solid fa-van-shuttle text-purple-400 text-lg"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-white">Fiorino / Van</div>
+                                    <div class="text-[10px] text-gray-400">Até 500 kg • Cargas volumosas</div>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs font-extrabold text-emerald-400" id="price-fiorino">
+                                Total: R$ 581.00
+                            </div>
+                        </div>
+
+                        <!-- Caminhão VUC -->
+                        <div id="veh-vuc" onclick="selectVehicle('vuc')" class="vehicle-card cursor-pointer p-3 rounded-xl bg-[#131c30] border border-gray-800 transition">
+                            <div class="flex items-center space-x-2.5">
+                                <i class="fa-solid fa-truck text-orange-400 text-lg"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-white">Caminhão VUC</div>
+                                    <div class="text-[10px] text-gray-400">Até 1.500 kg • Mudanças e paletes</div>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs font-extrabold text-emerald-400" id="price-vuc">
+                                Total: R$ 915.60
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Payment Method & Submit -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Forma de Pagamento</label>
+                        <select id="formaPagamento" class="w-full bg-[#131c30] border border-gray-800 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500">
+                            <option value="PIX Instantâneo">PIX Instantâneo (Desconto de 5%)</option>
+                            <option value="Cartão de Crédito B2B">Cartão de Crédito B2B / Corporativo</option>
+                            <option value="Faturamento Faturado 15 Dias">Boleto / Faturado (15 Dias)</option>
+                            <option value="Dinheiro na Coleta">Dinheiro / Na Coleta</option>
+                        </select>
+                    </div>
+
+                    <button onclick="submitOrder()" class="w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold rounded-xl transition duration-200 shadow-lg flex items-center justify-center space-x-2 text-sm">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Confirmar e Solicitar Entrega Agora</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- RIGHT PANEL: ACOMPANHAMENTO GPS E RECIBOS -->
+            <div class="lg:col-span-5 space-y-5">
+                
+                <div class="bg-[#0d1424] border border-gray-800 rounded-2xl p-5 sm:p-6 shadow-xl sticky top-20">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-location-arrow text-emerald-400"></i>
+                            Acompanhamento GPS e Recibos
+                        </h2>
+                        <span class="text-xs text-gray-400">Entregas do Cliente</span>
+                    </div>
+
+                    <!-- Active Order Card -->
+                    <div id="active-order-container" class="bg-[#111827] border border-gray-800 rounded-2xl p-4 space-y-4">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                            <div>
+                                <span class="text-xs font-semibold text-gray-400 block">Código da Entrega</span>
+                                <span class="text-sm font-extrabold text-amber-400 tracking-wide" id="trackingCodeDisplay">MSN-8842</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-semibold text-gray-400 block">Valor Confirmado</span>
+                                <span class="text-base font-black text-emerald-400" id="trackingPriceDisplay">R$ 409.10</span>
+                            </div>
+                        </div>
+
+                        <!-- Route visual info -->
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-start space-x-2">
+                                <i class="fa-solid fa-circle-dot text-emerald-500 mt-0.5"></i>
+                                <div>
+                                    <span class="text-gray-400">De:</span>
+                                    <span class="font-medium text-white block" id="trackingOrigemDisplay">Rua 25 de Março, São Paulo - SP</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <i class="fa-solid fa-location-dot text-amber-500 mt-0.5"></i>
+                                <div>
+                                    <span class="text-gray-400">Para:</span>
+                                    <span class="font-medium text-white block" id="trackingDestinoDisplay">Av. Francisco Glicério, Campinas - SP</span>
+                                </div>
+                            </div>
+                            <div class="pt-1 border-t border-gray-800 text-gray-300">
+                                <span class="text-gray-400">Material:</span>
+                                <span id="trackingMaterialDisplay">Caixas de Componentes Eletrônicos (120 kg)</span>
+                            </div>
+                        </div>
+
+                        <!-- Coleta & Destino Info Cards -->
+                        <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                            <div class="bg-[#1a2336] p-2.5 rounded-xl border border-gray-800">
+                                <div class="text-emerald-400 font-bold uppercase text-[10px]">Coleta</div>
+                                <div class="font-semibold text-white mt-0.5" id="trackingColetaNome">Roberto Souza</div>
+                                <div class="text-gray-400 text-[10px]">CPF: 123.456.789-00</div>
+                            </div>
+                            <div class="bg-[#1a2336] p-2.5 rounded-xl border border-gray-800">
+                                <div class="text-amber-400 font-bold uppercase text-[10px]">Destino</div>
+                                <div class="font-semibold text-white mt-0.5" id="trackingDestinoNome">Marcelo Oliveira</div>
+                                <div class="text-gray-400 text-[10px]">CPF: 987.654.321-11</div>
+                            </div>
+                        </div>
+
+                        <!-- Simulated Interactive GPS Progress Map -->
+                        <div class="bg-[#0b101d] rounded-xl p-3 border border-gray-800 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-gray-400">Status em Tempo Real:</span>
+                                <span id="gpsStatusBadge" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                                    Em Trânsito
+                                </span>
+                            </div>
+
+                            <!-- Progress bar -->
+                            <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                                <div id="gpsProgressBar" class="bg-gradient-to-r from-amber-500 to-emerald-400 h-full w-2/3 transition-all duration-500"></div>
+                            </div>
+
+                            <div class="flex justify-between text-[10px] text-gray-500 pt-1">
+                                <span>Coletado</span>
+                                <span>Rodovia Anhanguera (km 48)</span>
+                                <span>Entrega</span>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="pt-2">
+                            <button onclick="openReceiptModal()" class="w-full py-2.5 bg-[#1f2937] hover:bg-gray-700 text-white font-bold rounded-xl border border-gray-700 transition flex items-center justify-center space-x-2 text-xs">
+                                <i class="fa-solid fa-print text-amber-400"></i>
+                                <span>Ver Recibo Completo</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 2: APP MOTOBOY / MOTORISTA -->
+        <!-- ================================================================= -->
+        <div id="view-driver" class="hidden space-y-6">
+            
+            <!-- Driver Header Bar -->
+            <div class="bg-[#0d1424] border border-gray-800 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-bold text-xl">
+                        <i class="fa-solid fa-helmet-safety"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg text-white">Carlos Eduardo (Motorista)</h2>
+                        <p class="text-xs text-gray-400">Veículo: Fiorino Placa: <span class="text-amber-400 font-mono font-bold">ABC-4E88</span></p>
+                    </div>
+                </div>
+
+                <!-- Driver Status Toggle -->
+                <div class="flex items-center space-x-3 bg-[#131c30] p-2 rounded-xl border border-gray-800">
+                    <span class="text-xs font-semibold text-gray-300">Status:</span>
+                    <button id="driverStatusBtn" onclick="toggleDriverStatus()" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span>DISPONÍVEL / ONLINE</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Earnings Cards (LÍQUIDO DO MOTORISTA) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-[#0d1424] border border-gray-800 p-4 rounded-xl">
+                    <span class="text-xs font-medium text-gray-400">Seus Ganhos Hoje (Líquido)</span>
+                    <div class="text-xl font-extrabold text-emerald-400 mt-1" id="driverEarningsToday">R$ 253,67</div>
+                </div>
+                <div class="bg-[#0d1424] border border-gray-800 p-4 rounded-xl">
+                    <span class="text-xs font-medium text-gray-400">Corridas Concluídas</span>
+                    <div class="text-xl font-extrabold text-white mt-1">4 Entregas</div>
+                </div>
+                <div class="bg-[#0d1424] border border-gray-800 p-4 rounded-xl">
+                    <span class="text-xs font-medium text-gray-400">Sua Avaliação</span>
+                    <div class="text-xl font-extrabold text-amber-400 mt-1 flex items-center gap-1">
+                        <i class="fa-solid fa-star text-sm"></i> 4.98
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Jobs Board -->
+            <div class="bg-[#0d1424] border border-gray-800 rounded-2xl p-5 shadow-xl">
+                <h3 class="font-bold text-white mb-4 flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-amber-500"></i>
+                        Entregas Disponíveis na Região (São Paulo - Campinas)
+                    </span>
+                    <span class="text-xs font-normal text-gray-400 bg-[#131c30] px-3 py-1 rounded-lg border border-gray-800">
+                        Exibindo apenas seu valor líquido
+                    </span>
+                </h3>
+
+                <div class="space-y-3" id="driver-jobs-list">
+                    <!-- Dynamic rendering by JS based on driver rate -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 3: PAINEL ADMIN B2B -->
+        <!-- ================================================================= -->
+        <div id="view-admin" class="hidden space-y-6">
+            
+            <!-- Dashboard Top Metrics -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-[#0d1424] border border-gray-800 p-4 rounded-xl shadow-md">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-semibold text-gray-400">Faturamento Bruto</span>
+                        <i class="fa-solid fa-sack-dollar text-emerald-400"></i>
+                    </div>
+                    <div class="text-2xl font-black text-white mt-2" id="adminTotalGross">R$ 14.890,00</div>
+                    <div class="text-[11px] text-emerald-400 mt-1">Cobrado dos Clientes</div>
+                </div>
+
+                <div class="bg-[#0d1424] border border-gray-800 p-4 rounded-xl shadow-md">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-semibold text-gray-400">Repasse Motoristas</span>
+                        <i class="fa-solid fa-hand-holding-dollar text-blue-400"></i>
+                    </div>
+                    <div class="text-2xl font-black text-blue-400 mt-2" id="adminTotalDriverPayout">R$ 9.926,67</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Pago aos Prestadores</div>
+                </div>
+
+                <div class="bg-[#0d1424] border border-gray-800 p-4 rounded-xl shadow-md">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-semibold text-gray-400">Prestadores a Pagar</span>
+                        <i class="fa-solid fa-clock-rotate-left text-rose-400"></i>
+                    </div>
+                    <div class="text-2xl font-black text-rose-400 mt-2" id="adminPendingDriverPayout">R$ 1.840,00</div>
+                    <div class="text-[11px] text-rose-300 mt-1">Pendente nesta Semana</div>
+                </div>
+
+                <div class="bg-[#0d1424] border border-gray-800 p-4 rounded-xl shadow-md">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-semibold text-gray-400">Clientes Devendo (Fiado)</span>
+                        <i class="fa-solid fa-file-invoice-dollar text-amber-400"></i>
+                    </div>
+                    <div class="text-2xl font-black text-amber-400 mt-2" id="adminPendingClientReceivables">R$ 2.410,00</div>
+                    <div class="text-[11px] text-amber-300 mt-1">Em Aberto / Faturado</div>
+                </div>
+            </div>
+
+            <!-- Admin Sub-tabs Navigation -->
+            <div class="flex flex-wrap gap-2 border-b border-gray-800 pb-3">
+                <button onclick="switchAdminSubtab('pedidos')" id="subtab-btn-pedidos" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md">
+                    <i class="fa-solid fa-list mr-1"></i> Todos os Pedidos
+                </button>
+                <button onclick="switchAdminSubtab('prestadores')" id="subtab-btn-prestadores" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#131c30] text-gray-400 hover:text-white border border-gray-800">
+                    <i class="fa-solid fa-motorcycle mr-1"></i> Fechamento de Prestadores (Semanal)
+                </button>
+                <button onclick="switchAdminSubtab('clientes')" id="subtab-btn-clientes" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#131c30] text-gray-400 hover:text-white border border-gray-800">
+                    <i class="fa-solid fa-hand-holding-hand mr-1"></i> Clientes Devendo (Fiado / Pendente)
+                </button>
+            </div>
+
+            <!-- SUBTAB 1: PEDIDOS GLOBAIS & COMISSÃO -->
+            <div id="subtab-content-pedidos" class="space-y-4">
+                <!-- Comissão / Split Configuration Card -->
+                <div class="bg-[#0d1424] border border-amber-500/30 rounded-2xl p-5 shadow-xl bg-gradient-to-r from-[#0d1424] to-[#131c30]">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-amber-400"></i>
+                                Configuração da Divisão de Comissão (Split de Pagamento)
+                            </h4>
+                            <p class="text-xs text-gray-400">
+                                Defina a % do valor total que é repassada ao motorista. Exemplo: Em um frete de R$ 300, a 66.67% o motorista recebe R$ 200 e a empresa retém R$ 100.
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-[#0b101d] px-4 py-2.5 rounded-xl border border-gray-800 flex-shrink-0">
+                            <label class="text-xs font-semibold text-gray-300">Repasse Motorista (%):</label>
+                            <input type="number" id="driverCommissionRateInput" value="66.67" step="0.1" min="1" max="99" onchange="updateCommissionRate()" class="w-20 bg-[#131c30] border border-amber-500/50 rounded-lg px-2.5 py-1 text-sm font-bold text-amber-400 text-center focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Admin Data Table -->
+                <div class="bg-[#0d1424] border border-gray-800 rounded-2xl p-5 shadow-xl">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+                        <h3 class="font-bold text-white text-base">Gestão Global e Repasse Financeiro B2B</h3>
+                        <input type="text" placeholder="Buscar por ID, Cliente ou Cidade..." class="bg-[#131c30] border border-gray-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-amber-500 w-full sm:w-64">
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-[#131c30] text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">CÓDIGO</th>
+                                    <th class="py-3 px-4">CLIENTE B2B</th>
+                                    <th class="py-3 px-4">ROTA</th>
+                                    <th class="py-3 px-4">VEÍCULO</th>
+                                    <th class="py-3 px-4">TOTAL CLIENTE</th>
+                                    <th class="py-3 px-4 text-blue-400">REPASSE MOTORISTA</th>
+                                    <th class="py-3 px-4 text-amber-400">COMISSÃO EMPRESA</th>
+                                    <th class="py-3 px-4">STATUS</th>
+                                    <th class="py-3 px-4 text-right">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800" id="adminTableBody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBTAB 2: FECHAMENTO SEMANAL DOS PRESTADORES -->
+            <div id="subtab-content-prestadores" class="hidden space-y-4">
+                <div class="bg-[#0d1424] border border-gray-800 rounded-2xl p-5 shadow-xl space-y-4">
+                    
+                    <!-- Filters Bar -->
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-[#131c30] p-3.5 rounded-xl border border-gray-800">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-400 mb-1">Filtrar por Prestador:</label>
+                                <select id="filterDriverSelect" onchange="renderDriverSettlements()" class="bg-[#0d1424] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                                    <option value="ALL">Todos os Prestadores</option>
+                                    <option value="Carlos Eduardo">Carlos Eduardo (Fiorino)</option>
+                                    <option value="Roberto Souza">Roberto Souza (Motoboy)</option>
+                                    <option value="Marcos Silva">Marcos Silva (VUC)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-400 mb-1">Período / Semana:</label>
+                                <select id="filterPeriodSelect" onchange="renderDriverSettlements()" class="bg-[#0d1424] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                                    <option value="CURRENT_WEEK">Semana Atual (27/10 a 02/11/2026)</option>
+                                    <option value="LAST_WEEK">Semana Anterior (20/10 a 26/10/2026)</option>
+                                    <option value="MONTH">Mês Atual (Novembro/2026)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 block">Total a Pagar Selecionado:</span>
+                            <span class="text-lg font-black text-rose-400" id="settlementSelectedTotal">R$ 1.840,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Settlements Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-[#131c30] text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">PRESTADOR</th>
+                                    <th class="py-3 px-4">VEÍCULO / PLACA</th>
+                                    <th class="py-3 px-4">PERÍODO</th>
+                                    <th class="py-3 px-4">QTD ENTREGAS</th>
+                                    <th class="py-3 px-4 text-emerald-400">VALOR LÍQUIDO A PAGAR</th>
+                                    <th class="py-3 px-4">STATUS PAGAMENTO</th>
+                                    <th class="py-3 px-4">DATA DO PAGAMENTO</th>
+                                    <th class="py-3 px-4 text-center">TICAR / MARCAR COMO PAGO</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800" id="driverSettlementsTableBody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SUBTAB 3: CONTROLE DE CLIENTES DEVENDO (FIADO) -->
+            <div id="subtab-content-clientes" class="hidden space-y-4">
+                <div class="bg-[#0d1424] border border-gray-800 rounded-2xl p-5 shadow-xl space-y-4">
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#131c30] p-3.5 rounded-xl border border-gray-800">
+                        <div>
+                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-file-invoice-dollar text-amber-400"></i>
+                                Cobrança B2B & Faturamento em Aberto
+                            </h4>
+                            <p class="text-xs text-gray-400">Gerencie fretes faturados ou pendentes de pagamento pelos clientes.</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 block">Total a Receber dos Clientes:</span>
+                            <span class="text-lg font-black text-amber-400" id="pendingClientsTotalDisplay">R$ 2.410,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Client Debts Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-[#131c30] text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">CÓDIGO / PEDIDO</th>
+                                    <th class="py-3 px-4">CLIENTE B2B</th>
+                                    <th class="py-3 px-4">DATA DA CORRIDA</th>
+                                    <th class="py-3 px-4">VENCIMENTO</th>
+                                    <th class="py-3 px-4 text-amber-400">VALOR DEVIDO</th>
+                                    <th class="py-3 px-4">STATUS COBRANÇA</th>
+                                    <th class="py-3 px-4">DATA RECEBIMENTO</th>
+                                    <th class="py-3 px-4 text-center">TICAR / QUITAR DÉBITO</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800" id="clientDebtsTableBody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#0b101d] border-t border-gray-800 py-4 px-4 text-center text-xs text-gray-500 mt-6">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>
+                © 2026 MSN Entregas Express - Logística Integrada São Paulo & Região
+            </div>
+            <div class="flex items-center space-x-4 text-gray-400">
+                <span>Atendimento B2B: (11) 4003-9821</span>
+                <span>•</span>
+                <span>Suporte 24h</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL: RECIBO COMPLETO -->
+    <div id="receiptModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#0d1424] border border-gray-800 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
+            
+            <button onclick="closeReceiptModal()" class="absolute right-4 top-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Printable Header -->
+            <div class="border-b border-gray-800 pb-4 text-center">
+                <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-500 text-slate-950 font-bold mb-2">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <h3 class="text-lg font-extrabold text-white">Comprovante de Frete e Serviço</h3>
+                <p class="text-xs text-gray-400">MSN Entregas Express • CNPJ: 45.892.110/0001-94</p>
+            </div>
+
+            <!-- Receipt Metadata -->
+            <div class="space-y-3 text-xs">
+                <div class="flex justify-between items-center bg-[#131c30] p-3 rounded-xl">
+                    <span class="text-gray-400">Número do Pedido:</span>
+                    <span class="font-mono font-bold text-amber-400" id="recModalId">MSN-8842</span>
+                </div>
+
+                <div class="space-y-1 bg-[#131c30] p-3 rounded-xl">
+                    <div class="text-gray-400 font-semibold mb-1">Trajeto:</div>
+                    <div class="text-white"><strong class="text-emerald-400">Origem:</strong> <span id="recModalOrigem">Rua 25 de Março, São Paulo - SP</span></div>
+                    <div class="text-white"><strong class="text-amber-400">Destino:</strong> <span id="recModalDestino">Av. Francisco Glicério, Campinas - SP</span></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-[#131c30] p-3 rounded-xl">
+                        <span class="text-gray-400 block mb-0.5">Veículo / Categoria</span>
+                        <span class="font-bold text-white" id="recModalVeiculo">Carro / Passeio</span>
+                    </div>
+                    <div class="bg-[#131c30] p-3 rounded-xl">
+                        <span class="text-gray-400 block mb-0.5">Pagamento</span>
+                        <span class="font-bold text-white" id="recModalPagamento">PIX Instantâneo</span>
+                    </div>
+                </div>
+
+                <div class="bg-[#131c30] p-3 rounded-xl flex justify-between items-center">
+                    <div>
+                        <span class="text-gray-400 block">Valor Total do Frete</span>
+                        <span class="text-[10px] text-gray-500">(Inclui pedagio e seguro declarados)</span>
+                    </div>
+                    <span class="text-lg font-black text-emerald-400" id="recModalValor">R$ 409.10</span>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-end space-x-2">
+                <button onclick="window.print()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl transition text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Imprimir Recibo PDF</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // State variables
+        let selectedVehicle = 'motoboy';
+        let currentKm = 98;
+        let currentToll = 28.60;
+        let driverOnline = true;
+        let driverPercentRate = 66.67; // Default: 66.67% to driver (33.33% platform)
+
+        // Mock Orders Data
+        let ordersList = [
+            { id: 'MSN-8842', client: 'TechLog Eletrônicos SA', origem: 'São Paulo', destino: 'Campinas', veiculo: 'Carro / Passeio', gross: 409.10, status: 'Em Trânsito' },
+            { id: 'MSN-8839', client: 'Indústria Metalúrgica SP', origem: 'Sorocaba', destino: 'São Paulo', veiculo: 'Caminhão VUC', gross: 915.60, status: 'Entregue' },
+            { id: 'MSN-8835', client: 'Farma Express LTDA', origem: 'Campinas', destino: 'Piracicaba', veiculo: 'Fiorino / Van', gross: 581.00, status: 'Entregue' },
+            { id: 'MSN-8830', client: 'Autopeças Campinas', origem: 'Jundiaí', destino: 'Campinas', veiculo: 'Motoboy Express', gross: 300.00, status: 'Entregue' }
+        ];
+
+        // Mock Driver Weekly Settlements Data
+        let driverSettlements = [
+            { id: 1, driver: 'Carlos Eduardo', vehicle: 'Fiorino (ABC-4E88)', period: '27/10 a 02/11/2026', totalRuns: 12, netAmount: 1240.00, isPaid: false, paidAt: null },
+            { id: 2, driver: 'Roberto Souza', vehicle: 'Motoboy (XYZ-9123)', period: '27/10 a 02/11/2026', totalRuns: 8, netAmount: 600.00, isPaid: false, paidAt: null },
+            { id: 3, driver: 'Marcos Silva', vehicle: 'VUC (KLM-5522)', period: '20/10 a 26/10/2026', totalRuns: 15, netAmount: 2150.00, isPaid: true, paidAt: '27/10/2026 14:30' }
+        ];
+
+        // Mock Client Unpaid / Debts Data
+        let clientDebts = [
+            { id: 'MSN-8810', client: 'TechLog Eletrônicos SA', runDate: '28/10/2026', dueDate: '05/11/2026', amount: 1250.00, isPaid: false, paidAt: null },
+            { id: 'MSN-8795', client: 'Supermercado Central B2B', runDate: '25/10/2026', dueDate: '01/11/2026', amount: 1160.00, isPaid: false, paidAt: null },
+            { id: 'MSN-8740', client: 'Farma Express LTDA', runDate: '18/10/2026', dueDate: '25/10/2026', amount: 890.00, isPaid: true, paidAt: '25/10/2026 16:45' }
+        ];
+
+        // Vehicle Base Pricing Rates
+        const vehicleRates = {
+            motoboy: { base: 20, kmRate: 2.2, maxWeight: 20, name: 'Motoboy Express' },
+            carro: { base: 40, kmRate: 3.5, maxWeight: 150, name: 'Carro / Passeio' },
+            fiorino: { base: 80, kmRate: 4.8, maxWeight: 500, name: 'Fiorino / Van' },
+            vuc: { base: 150, kmRate: 7.2, maxWeight: 1500, name: 'Caminhão VUC' }
+        };
+
+        // Initialize calculations on load
+        window.onload = function() {
+            updatePricingCalculations();
+            renderAdminTable();
+            renderDriverJobs();
+            renderDriverSettlements();
+            renderClientDebts();
+        };
+
+        // Switch Admin Subtabs
+        function switchAdminSubtab(subtab) {
+            document.getElementById('subtab-content-pedidos').classList.add('hidden');
+            document.getElementById('subtab-content-prestadores').classList.add('hidden');
+            document.getElementById('subtab-content-clientes').classList.add('hidden');
+
+            document.getElementById('subtab-btn-pedidos').className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#131c30] text-gray-400 hover:text-white border border-gray-800";
+            document.getElementById('subtab-btn-prestadores').className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#131c30] text-gray-400 hover:text-white border border-gray-800";
+            document.getElementById('subtab-btn-clientes').className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#131c30] text-gray-400 hover:text-white border border-gray-800";
+
+            if (subtab === 'pedidos') {
+                document.getElementById('subtab-content-pedidos').classList.remove('hidden');
+                document.getElementById('subtab-btn-pedidos').className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md";
+            } else if (subtab === 'prestadores') {
+                document.getElementById('subtab-content-prestadores').classList.remove('hidden');
+                document.getElementById('subtab-btn-prestadores').className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md";
+                renderDriverSettlements();
+            } else if (subtab === 'clientes') {
+                document.getElementById('subtab-content-clientes').classList.remove('hidden');
+                document.getElementById('subtab-btn-clientes').className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md";
+                renderClientDebts();
+            }
+        }
+
+        // Render Driver Settlements Table with Checkbox Toggle
+        function renderDriverSettlements() {
+            const driverFilter = document.getElementById('filterDriverSelect').value;
+            const tbody = document.getElementById('driverSettlementsTableBody');
+            tbody.innerHTML = '';
+
+            let totalPending = 0;
+
+            driverSettlements.forEach(item => {
+                if (driverFilter !== 'ALL' && item.driver !== driverFilter) return;
+
+                if (!item.isPaid) {
+                    totalPending += item.netAmount;
+                }
+
+                const row = document.createElement('tr');
+                row.className = "hover:bg-[#131c30]/50 transition";
+                row.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-white">${item.driver}</td>
+                    <td class="py-3 px-4 text-gray-300">${item.vehicle}</td>
+                    <td class="py-3 px-4 font-mono text-gray-400">${item.period}</td>
+                    <td class="py-3 px-4 text-center font-bold text-white">${item.totalRuns} corridas</td>
+                    <td class="py-3 px-4 font-extrabold text-emerald-400 text-sm">R$ ${item.netAmount.toFixed(2)}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                            ${item.isPaid ? 'PAGO' : 'PENDENTE'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 font-mono text-gray-400 text-[11px]">${item.paidAt ? item.paidAt : '---'}</td>
+                    <td class="py-3 px-4 text-center">
+                        <input type="checkbox" ${item.isPaid ? 'checked' : ''} onchange="toggleDriverSettlementPayment(${item.id})" class="w-4 h-4 text-amber-500 bg-gray-800 border-gray-700 rounded cursor-pointer accent-amber-500">
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('settlementSelectedTotal').innerText = `R$ ${totalPending.toFixed(2)}`;
+            document.getElementById('adminPendingDriverPayout').innerText = `R$ ${totalPending.toFixed(2)}`;
+        }
+
+        // Toggle Driver Settlement Status
+        function toggleDriverSettlementPayment(id) {
+            const found = driverSettlements.find(s => s.id === id);
+            if (found) {
+                found.isPaid = !found.isPaid;
+                if (found.isPaid) {
+                    const now = new Date();
+                    found.paidAt = `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`;
+                } else {
+                    found.paidAt = null;
+                }
+                renderDriverSettlements();
+            }
+        }
+
+        // Render Client Debts Table with Checkbox Toggle
+        function renderClientDebts() {
+            const tbody = document.getElementById('clientDebtsTableBody');
+            tbody.innerHTML = '';
+
+            let totalPendingClient = 0;
+
+            clientDebts.forEach(item => {
+                if (!item.isPaid) {
+                    totalPendingClient += item.amount;
+                }
+
+                const row = document.createElement('tr');
+                row.className = "hover:bg-[#131c30]/50 transition";
+                row.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-bold text-amber-400">${item.id}</td>
+                    <td class="py-3 px-4 font-bold text-white">${item.client}</td>
+                    <td class="py-3 px-4 font-mono text-gray-400">${item.runDate}</td>
+                    <td class="py-3 px-4 font-mono text-rose-400">${item.dueDate}</td>
+                    <td class="py-3 px-4 font-extrabold text-amber-400 text-sm">R$ ${item.amount.toFixed(2)}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
+                            ${item.isPaid ? 'QUITADO' : 'DEVENDO / FIADO'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 font-mono text-gray-400 text-[11px]">${item.paidAt ? item.paidAt : '---'}</td>
+                    <td class="py-3 px-4 text-center">
+                        <input type="checkbox" ${item.isPaid ? 'checked' : ''} onchange="toggleClientDebtPayment('${item.id}')" class="w-4 h-4 text-emerald-500 bg-gray-800 border-gray-700 rounded cursor-pointer accent-emerald-500">
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('pendingClientsTotalDisplay').innerText = `R$ ${totalPendingClient.toFixed(2)}`;
+            document.getElementById('adminPendingClientReceivables').innerText = `R$ ${totalPendingClient.toFixed(2)}`;
+        }
+
+        // Toggle Client Debt Status
+        function toggleClientDebtPayment(id) {
+            const found = clientDebts.find(c => c.id === id);
+            if (found) {
+                found.isPaid = !found.isPaid;
+                if (found.isPaid) {
+                    const now = new Date();
+                    found.paidAt = `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`;
+                } else {
+                    found.paidAt = null;
+                }
+                renderClientDebts();
+            }
+        }
+
+        // Update Driver Rate Ratio from Admin Input
+        function updateCommissionRate() {
+            const inputVal = parseFloat(document.getElementById('driverCommissionRateInput').value);
+            if (!isNaN(inputVal) && inputVal > 0 && inputVal <= 100) {
+                driverPercentRate = inputVal;
+                renderAdminTable();
+                renderDriverJobs();
+            }
+        }
+
+        // Render Driver Jobs showing ONLY the driver payout (Net Amount)
+        function renderDriverJobs() {
+            const jobsListContainer = document.getElementById('driver-jobs-list');
+            const sampleJobs = [
+                { id: 'MSN-9912', type: 'Fiorino / Van', color: 'amber', origin: 'Jundiaí (Industrial)', dest: 'Campinas (Viracopos)', material: '4 Caixas de Peças Industriais (180 kg)', gross: 442.50 },
+                { id: 'MSN-7731', type: 'Motoboy', color: 'blue', origin: 'São Paulo (Lapa)', dest: 'Osasco (Centro)', material: 'Envelopes de Documentos Urgentes (2 kg)', gross: 132.75 },
+                { id: 'MSN-8842', type: 'Carro / Passeio', color: 'emerald', origin: 'Rua 25 de Março, SP', dest: 'Av. Francisco Glicério, Campinas', material: 'Componentes Eletrônicos (120 kg)', gross: 409.10 }
+            ];
+
+            jobsListContainer.innerHTML = '';
+            sampleJobs.forEach(job => {
+                const driverNet = (job.gross * (driverPercentRate / 100)).toFixed(2);
+                const card = document.createElement('div');
+                card.className = "bg-[#131c30] border border-gray-800 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-amber-500/40 transition";
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-${job.color}-500/20 text-${job.color}-400 font-bold text-xs px-2 py-0.5 rounded border border-${job.color}-500/30">${job.type}</span>
+                            <span class="text-xs text-gray-400 font-mono">${job.id}</span>
+                        </div>
+                        <div class="text-sm font-semibold text-white">
+                            Coleta: <span class="text-gray-300">${job.origin}</span> ➔ Destino: <span class="text-gray-300">${job.dest}</span>
+                        </div>
+                        <div class="text-xs text-gray-400">Material: ${job.material}</div>
+                    </div>
+                    <div class="flex items-center justify-between w-full md:w-auto gap-4">
+                        <div class="text-right">
+                            <div class="text-xs text-gray-400">Valor Líquido do Seu Frete</div>
+                            <div class="text-lg font-black text-emerald-400">R$ ${driverNet}</div>
+                        </div>
+                        <button onclick="acceptDriverJob('${job.id}')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl transition shadow-md">
+                            Aceitar Corrida
+                        </button>
+                    </div>
+                `;
+                jobsListContainer.appendChild(card);
+            });
+        }
+
+        // Render Admin Data Table with Split Calculations
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = '';
+
+            let totalGrossSum = 0;
+            let totalDriverPayoutSum = 0;
+
+            ordersList.forEach(order => {
+                const driverPayout = order.gross * (driverPercentRate / 100);
+                const platformProfit = order.gross - driverPayout;
+
+                totalGrossSum += order.gross;
+                totalDriverPayoutSum += driverPayout;
+
+                const row = document.createElement('tr');
+                row.className = "hover:bg-[#131c30]/50 transition";
+                row.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-bold text-amber-400">${order.id}</td>
+                    <td class="py-3 px-4 font-semibold text-white">${order.client}</td>
+                    <td class="py-3 px-4">${order.origem} ➔ ${order.destino}</td>
+                    <td class="py-3 px-4">${order.veiculo}</td>
+                    <td class="py-3 px-4 font-bold text-white">R$ ${order.gross.toFixed(2)}</td>
+                    <td class="py-3 px-4 font-bold text-blue-400">R$ ${driverPayout.toFixed(2)}</td>
+                    <td class="py-3 px-4 font-bold text-amber-400">R$ ${platformProfit.toFixed(2)}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${order.status === 'Em Trânsito' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}">
+                            ${order.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="openReceiptModal('${order.id}')" class="text-xs text-amber-400 hover:underline">Recibo</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Update Top Financial Metrics Cards
+            const totalProfitSum = totalGrossSum - totalDriverPayoutSum;
+            document.getElementById('adminTotalGross').innerText = `R$ ${totalGrossSum.toFixed(2)}`;
+            document.getElementById('adminTotalDriverPayout').innerText = `R$ ${totalDriverPayoutSum.toFixed(2)}`;
+            document.getElementById('adminTotalPlatformProfit').innerText = `R$ ${totalProfitSum.toFixed(2)}`;
+        }
+
+        // Tab Navigation Switcher
+        function switchTab(tab) {
+            document.getElementById('view-cliente').classList.add('hidden');
+            document.getElementById('view-driver').classList.add('hidden');
+            document.getElementById('view-admin').classList.add('hidden');
+
+            document.getElementById('nav-cliente').className = "px-4 py-2 rounded-lg text-gray-400 hover:text-white flex items-center gap-2 transition-all duration-200";
+            document.getElementById('nav-driver').className = "px-4 py-2 rounded-lg text-gray-400 hover:text-white flex items-center gap-2 transition-all duration-200";
+            document.getElementById('nav-admin').className = "px-4 py-2 rounded-lg text-gray-400 hover:text-white flex items-center gap-2 transition-all duration-200";
+
+            if (tab === 'cliente') {
+                document.getElementById('view-cliente').classList.remove('hidden');
+                document.getElementById('nav-cliente').className = "px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 bg-amber-500 text-slate-950 shadow-md font-bold";
+            } else if (tab === 'driver') {
+                document.getElementById('view-driver').classList.remove('hidden');
+                document.getElementById('nav-driver').className = "px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 bg-amber-500 text-slate-950 shadow-md font-bold";
+                renderDriverJobs();
+            } else if (tab === 'admin') {
+                document.getElementById('view-admin').classList.remove('hidden');
+                document.getElementById('nav-admin').className = "px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 bg-amber-500 text-slate-950 shadow-md font-bold";
+                renderAdminTable();
+            }
+        }
+
+        // Apply Preset Quick Routes
+        function applyPreset(origem, destino, km, pedagio) {
+            document.getElementById('origemInput').value = origem;
+            document.getElementById('destinoInput').value = destino;
+            currentKm = km;
+            currentToll = pedagio;
+            updatePricingCalculations();
+        }
+
+        // Select Vehicle Category
+        function selectVehicle(type) {
+            selectedVehicle = type;
+            const cards = document.querySelectorAll('.vehicle-card');
+            cards.forEach(card => card.classList.remove('gold-border-active'));
+            
+            document.getElementById(`veh-${type}`).classList.add('gold-border-active');
+            updatePricingCalculations();
+        }
+
+        // Dynamic Pricing Logic
+        function updatePricingCalculations() {
+            const peso = parseFloat(document.getElementById('pesoInput').value) || 1;
+            const valorDeclarado = parseFloat(document.getElementById('valorDeclaradoInput').value) || 0;
+            
+            document.getElementById('pesoValDisplay').innerText = peso + ' kg';
+
+            // Calculate price for each vehicle
+            Object.keys(vehicleRates).forEach(vKey => {
+                const v = vehicleRates[vKey];
+                const seguro = valorDeclarado * 0.005;
+                const weightExtra = peso > v.maxWeight ? (peso - v.maxWeight) * 1.5 : 0;
+                const total = v.base + (currentKm * v.kmRate) + currentToll + seguro + weightExtra;
+                
+                document.getElementById(`price-${vKey}`).innerText = `Total: R$ ${total.toFixed(2)}`;
+            });
+        }
+
+        // Submit New Order
+        function submitOrder() {
+            const origem = document.getElementById('origemInput').value;
+            const destino = document.getElementById('destinoInput').value;
+            const material = document.getElementById('materialInput').value;
+            const peso = document.getElementById('pesoInput').value;
+            const pagamento = document.getElementById('formaPagamento').value;
+
+            if (!origem || !destino) {
+                alert('Por favor, informe a origem e o destino da entrega.');
+                return;
+            }
+
+            const randomId = 'MSN-' + Math.floor(1000 + Math.random() * 9000);
+            const priceText = document.getElementById(`price-${selectedVehicle}`).innerText.replace('Total: R$ ', '');
+            const grossVal = parseFloat(priceText);
+
+            // Add order to state
+            ordersList.unshift({
+                id: randomId,
+                client: 'Cliente Novo / App',
+                origem: origem.split(',')[0],
+                destino: destino.split(',')[0],
+                veiculo: vehicleRates[selectedVehicle].name,
+                gross: grossVal,
+                status: 'Em Trânsito'
+            });
+
+            // Update Right Side Tracking Panel
+            document.getElementById('trackingCodeDisplay').innerText = randomId;
+            document.getElementById('trackingPriceDisplay').innerText = `R$ ${grossVal.toFixed(2)}`;
+            document.getElementById('trackingOrigemDisplay').innerText = origem;
+            document.getElementById('trackingDestinoDisplay').innerText = destino;
+            document.getElementById('trackingMaterialDisplay').innerText = `${material} (${peso} kg)`;
+
+            // Update Modal info
+            document.getElementById('recModalId').innerText = randomId;
+            document.getElementById('recModalOrigem').innerText = origem;
+            document.getElementById('recModalDestino').innerText = destino;
+            document.getElementById('recModalVeiculo').innerText = vehicleRates[selectedVehicle].name;
+            document.getElementById('recModalPagamento').innerText = pagamento;
+            document.getElementById('recModalValor').innerText = `R$ ${grossVal.toFixed(2)}`;
+
+            renderAdminTable();
+            renderDriverJobs();
+
+            // Trigger visual progress animation
+            document.getElementById('gpsProgressBar').style.width = '15%';
+            document.getElementById('gpsStatusBadge').innerText = 'Aguardando Coleta';
+            
+            setTimeout(() => {
+                document.getElementById('gpsProgressBar').style.width = '60%';
+                document.getElementById('gpsStatusBadge').innerText = 'Em Trânsito';
+            }, 3000);
+
+            openReceiptModal();
+        }
+
+        // Driver Status Toggle
+        function toggleDriverStatus() {
+            driverOnline = !driverOnline;
+            const btn = document.getElementById('driverStatusBtn');
+            if (driverOnline) {
+                btn.className = "px-3 py-1.5 rounded-lg text-xs font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5";
+                btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>DISPONÍVEL / ONLINE</span>`;
+            } else {
+                btn.className = "px-3 py-1.5 rounded-lg text-xs font-extrabold bg-gray-700 text-gray-400 border border-gray-600 flex items-center gap-1.5";
+                btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-gray-400"></span><span>OFFLINE</span>`;
+            }
+        }
+
+        // Driver Accept Job
+        function acceptDriverJob(jobId) {
+            alert(`Corrida ${jobId} aceita com sucesso! Trajeto enviado para o seu GPS.`);
+        }
+
+        // Receipt Modal Handlers
+        function openReceiptModal(id) {
+            if (id) {
+                const found = ordersList.find(o => o.id === id);
+                if (found) {
+                    document.getElementById('recModalId').innerText = found.id;
+                    document.getElementById('recModalOrigem').innerText = found.origem;
+                    document.getElementById('recModalDestino').innerText = found.destino;
+                    document.getElementById('recModalVeiculo').innerText = found.veiculo;
+                    document.getElementById('recModalValor').innerText = `R$ ${found.gross.toFixed(2)}`;
+                }
+            }
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
